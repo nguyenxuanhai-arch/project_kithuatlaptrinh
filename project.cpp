@@ -59,59 +59,92 @@ void Them_sach()
 User Dang_Nhap()
 {
     User user;
-    cout << "Ten dang nhap : ";
-    cin >> user.username;
 
     bool loginSuccess = false;
 
     do {
+        cout << "Ten dang nhap : ";
+        cin >> user.username;
         cout << "Mat khau : ";
         cin >> user.password;
 
         for (const User& u : *users) {
             if (u.username == user.username && u.password == user.password) {
-                cout << "Đang nhap thanh cong " << endl;
+
                 loginSuccess = true;
                 return u;
             }
         }
 
-        cout << "Mat khau khong dung . Vui long nhap lai ." << endl;
+        cout << "Tai khoan hoac Mat khau khong dung . Vui long nhap lai ." << endl;
+       
+    } while (!loginSuccess);
+    return { -1, "", "", "" };
+}
+User Dang_Nhapuser()
+{
+    User user;
+ 
+    cout << "Ten nguoi dung : ";
+    cin >> user.username;
+
+    bool loginSuccess = false;
+
+    do {
+        for (const User& u : *users) {
+            if (u.username == user.username ) {
+
+                loginSuccess = true;
+                cout << "Dang nhap thanh cong " << endl;
+                 cout << "Nguoi dung chi duoc xem thong tin sach trong thu vien." << endl;
+                ifstream file;
+                char data;
+
+                        file.open("D://books.txt",ios::out);
+                        while(file.get(data))
+		                    cout<<data;
+   	                        file.close();
+                return u;
+            }
+        }
+        cout << "Ten nguoi dung khong chinh sac " << endl;
+        Dang_Nhapuser();
+        break;
     } while (!loginSuccess);
 
     return { -1, "", "", "" };
 }
-
-
+void suaten_nguoidung()
+{
+    string username ;
+    cout << "Nhap ten nguoi dung can sua: ";
+    cin >> username;
+    for (User& u : *users)
+    {
+        if (u.username == username)
+            {
+            cout << "Nhap ten nguoi dung moi" << endl;
+            cin >> u.username;
+            cout << "Thong tin da duoc cap nhat. " << endl;
+            return;
+        }
+    }
+    cout << "Khong tim thay ten nguoi dung " << username << endl;
+}
 void tao_tk()
 {
     User user;
     cout << "Ten dang nhap moi : ";
-    cin >> user.username;
+cin >> user.username;
 
 
-    string password, confirmPassword;
-    do {
-        cout << "Mat khau moi: ";
-        cin >> password;
-        cout << "Xac nhan mat khau : ";
-        cin >> confirmPassword;
-
-        if (password != confirmPassword)
-        {
-            cout << "Mat khau va xac nhan mot khau khong khop . vui long nhap lai ." << endl;
-        }
-    }
-
-    while (password != confirmPassword);
-
+    string password;
+        password = " ";
     user.password = password;
-
     user.userid = users->size() + 1;
     user.user_type = "user";
-
     users->push_back(user);
-    cout << "Tai khoan da duoc tao thanh cong." << endl;
+    cout << "Nguoi dung da duoc tao thanh cong." << endl;
 }
 
 
@@ -121,7 +154,7 @@ void luu_tt_sach() {
     if (file.is_open())
     {
         for (const Book& book : *books)
-        {
+{
             file << book.isbn << "," << book.title << "," << book.subject << ","
                  << book.author << "," << book.publisher << "," << book.date << ","
                  << book.pages << "," << book.copies << "\n";
@@ -142,7 +175,7 @@ void luu_tt_nguoi_dung()
     if (file.is_open())
     {
         for (const User& user : *users) {
-file << user.userid << "," << user.username << "," << user.password << ","
+                file << user.userid << "," << user.username << "," << user.password << ","
                  << user.user_type << "\n";
         }
         file.close();
@@ -229,7 +262,7 @@ void SuaSach() {
     getline(cin, s.author);
     cout << "Nha xuat ban : ";
     getline(cin, s.publisher);
-    cout << "Ngay xuat ban : ";
+cout << "Ngay xuat ban : ";
     getline(cin, s.date);
     cout << "So trang : ";
     cin >> s.pages;
@@ -247,7 +280,7 @@ void XoaSach()
 {
     string isbn;
     Book s ;
-    cout << "Nhap  ISBN cua sach can xoa : ";
+cout << "Nhap  ISBN cua sach can xoa : ";
     cin >> isbn;
 
   auto it = find_if(books->begin() , books->end(), [isbn](const Book& s)
@@ -262,73 +295,111 @@ void XoaSach()
   return ;
     cout << "Khong co sach do dau cin trai ISBN '" << isbn << "'." << endl;
 }
+void xoa_nguoidung()
+{
+    string username;
+    User u ;
+    cout << "Nhap ten nguoi dung can xoa : ";
+    cin >> username;
+
+  auto it = find_if(users->begin() , users->end(), [username](const User& u)
+  {
+    return u.username == username;
+  });
+  if ( it != users-> end())
+  {
+    users-> erase(it);
+  }
+  cout << " Ten nguoi dung " << username <<" da duoc xoa "<< endl;
+  return ;
+    cout << "Khong co khong co ten nguoi dung" << username << "'." << endl;
+}
 int main()
 {
     doc_tt_sach();
     doc_tt_nguoi_dung();
-
-    int lua_chon;
     int chon_tai_khoan;
-    int tai_khoan;
-    User currentUser;
-cout << " Chon loai tai khoan " << endl ;
+  
+    User tai_khoan;
+    lap: 
+    cout << " Chon loai tai khoan " << endl ;
         cout << " 1.Tai khoan user "<< endl;
         cout << " 2.Tai khoan cap cao" << endl ;
-        cout << "       Lua chon loai tai khoan "<< endl;
+        cout << " 0. Ket thuc. " << endl;
+        cout << "Lua chon loai tai khoan: ";
         cin >> chon_tai_khoan ;
         if ( chon_tai_khoan == 1 )
-{
-
-                ifstream file;
-                char data;
-
-                        file.open("D://books.txt",ios::out);
-                        while(file.get(data))
-		                    cout<<data;
-   	                        file.close();
-
-        }
-        if ( chon_tai_khoan  == 2 )
+            {
+                Dang_Nhapuser();
+                goto lap ; 
+            }
+        else if (chon_tai_khoan == 0)
         {
-            lapp :
+            cout << "Chuong trinh da ket thuc!" << endl;
+            return 0;
+        }
+         else if ( chon_tai_khoan  == 2 )
+        {
             Dang_Nhap();
             int edit ;
-            if (currentUser.userid != -1 )
+            if (tai_khoan.userid != -1 )
             {
-                cout << "Dang nhap thanh cong " << currentUser.username << "!" << endl;
-
-
-
+                cout << "Dang nhap thanh cong " << tai_khoan.username << "!" << endl;
+                do
+                {
                     cout << " 1. Them sach . "<< endl;
                     cout << " 2. Sua sach . " << endl;
-                    cout <<"  3. Xoa sach ."<< endl;
-                    cout << "   Nhap lua chon : "<< endl;
+                    cout << " 3. Xoa sach ."<< endl;
+                    cout << " 4. Them nguoi dung." << endl;
+                    cout << " 5. Sua ten nguoi dung." << endl;
+                    cout << " 6. Xoa nguoi dung. " << endl;
+                    cout << " 0. De ket thuc ." << endl;
+                    cout << " 7. Quay lai ." << endl; 
+                    cout << "   Nhap lua chon : ";
                     cin >> edit ;
-                    if ( edit == 1 )
+                    switch (edit )
                     {
-                        Them_sach();
+                        case 1 : 
+                            Them_sach();
                             luu_tt_sach();
-
-
-                    }
-                    else if (edit == 2 )
-                    {
-                        SuaSach();
+                            break;
+                        case 2 :
+                            SuaSach();
                             luu_tt_sach();
-
+                            break;
+                        case 3 : 
+                            XoaSach();
+                            luu_tt_sach();
+                            break;
+                        case 4 : 
+                            tao_tk();
+                            luu_tt_nguoi_dung();
+                            break;
+                        case 5  : 
+                            suaten_nguoidung();
+                            luu_tt_nguoi_dung();
+                            break;
+                        case 6 : 
+                            xoa_nguoidung();
+                            luu_tt_nguoi_dung();
+                            break;
+                        case 7 : 
+                            goto lap; 
+                            break;
+                        case 0 :
+                            cout  << " Chuong trinh da ket thuc : " << endl ; 
+                            break;
+                        default :
+                            cout << " Lua chon khong hop le : " << endl ;
+                            break;
                     }
-                    else if (edit == 3 )
-                    {
-                        XoaSach();
-                        luu_tt_sach();
-                    }
-
-
-            } else
-            {
-                cout << "Dang nhap that bai vui long kiem tra mat khau va ten dang nhap ." << endl;
-                goto lapp;
-            }
+                } while( edit != 0 );
+            } 
+        } 
+        else {
+        cout << " Lua chon khong hop le "    << endl ; 
+        cout << " Vui long nhap lai lua chon : " << endl ; 
+        goto lap; 
         }
     delete books;
     delete users;
